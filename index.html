@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Solar System</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>Calculate a weight of an object on a planet</h1>
+
+        <input type="text" id="mass" placeholder="Mass in Kilogram" />
+        <select> 
+            <option value='' selected hidden>--select planet-- </option>
+        </select>
+        <button>Calculate weight</button>
+
+    </header>
+    <main>
+        <div class="flex-container">
+            <div class="flex-item image">
+                <img src='./img/earth.png' class="planet-image" />
+            </div>
+            <div class="flex-item description"></div>
+
+        </div>
+    </main>
+    <script>
+       //clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+
+       //d='' --> flexcontainer is child of main 
+       //d=1  --> validityDivO is child of main 
+       //d=1  --> weight_divO  is child of main
+
+       document.querySelector('body').setAttribute("style","text-align:center;");
+       document.body.style.backgroundImage = "url('./img/galaxy.gif')";
+        document.querySelector('h1').setAttribute("style","color:white;margin-bottom:50px;");
+        document.querySelector('.image').setAttribute("style","padding:40px 0px;");
+        document.querySelector('.planet-image').setAttribute("style","width:33%;");
+
+        const input = document.querySelector('input');
+        const select = document.querySelector('select');
+        const button = document.querySelector('button');
+
+
+        input.className = 'border';
+        select.className = 'border';
+        button.classList = ('border color');
+        const border  = document.querySelectorAll('.border');                             
+        for(let ele of border){
+            ele.setAttribute("style","border-radius:5px;padding:8px;border:none;");
+        }
+
+        const color = document.querySelectorAll('.color');
+        for(let ele of color){
+            ele.style.color = 'white';
+            ele.style.backgroundColor = '#b5b4b9bd';
+            ele.style.fontWeight = 'bold';            
+        }
+
+        const planet = ["PLUTO","EARTH","JUPITER","MARS","MERCURY","MOON","NEPTUNE","SATURN","URANUS","VENUS"];
+        
+        const planet_weight=[0.62,9.807,24.79,3.721,3.7,1.62,11.15,10.44,8.87,8.87]
+        const planet_src=["./img/pluto.png","./img/earth.png","./img/jupiter.png","./img/mars.png","./img/mercury.png","./img/moon.png",
+                          "./img/neptune.png","./img/saturn.png","./img/uranus.png","./img/venus.png"]
+
+        const main = document.querySelector('main');
+        main.setAttribute("style","margin:10px auto;width:80%;background:#b9b2b22b;border-radius : 2px;");
+        const flexcontainer = document.querySelector('.flex-container');
+        
+        //adding options to select tag
+        for(let i=0;i<10;i++){
+            const option1 = document.createElement('option');
+            option1.textContent = planet[i];
+            option1.setAttribute("value",planet[i]);
+            if(i==0){
+                option1.setAttribute("selected","selected");
+            }
+            const select = document.querySelector('select');
+            select.appendChild(option1);
+        }
+
+        let d='';    //using d for replacing childs in different conditions and gettinbg it bac again
+
+        //validating calculate weight button
+        const validityDivO = document.createElement('div');     //outer div
+        validityDivO.className = 'validityDivO';
+        validityDivO.style.padding = '40px 15%';
+        validityDivO.style.color = 'white';
+        validityDivO.style.backgroundColor = '#b9b2b22b';
+        validityDivO.style.borderRadius = '2px';
+
+        const validityDivI = document.createElement('div');    //inner div
+        validityDivI.className = 'validityDivI';
+        validityDivI.style.padding = '40px 0px';
+        validityDivI.style.backgroundColor = '#b9b2b22b';
+        validityDivI.style.borderRadius = '2px';
+        validityDivI.style.fontWeight = 'bold';
+        validityDivI.textContent = 'Mass is required';
+        validityDivO.appendChild(validityDivI);
+        
+        //when button clicked this code runs
+        button.addEventListener('click',function(){
+            if(input.value==''){  
+                if(d==''){
+                    document.querySelector('main').replaceChild(validityDivO,flexcontainer); 
+                    d=1; 
+                }                         
+                      
+            }
+            else{
+                input_typed(); 
+            }
+
+               //console.log(input.value);
+        })
+        //now if 'mass is required' msg is shown on scren that means validityDivO is child of main & d=1
+        /* so if focus go to input feild (user type some input) then need to replace msg with earth img i.e validityDivO should 
+        replaced by flexcontainer --> d='' from d=1;  */
+        
+        input.addEventListener('click',(a)=>{
+               if(d==1){
+                   //console.log(d)
+                 document.querySelector('main').replaceChild(flexcontainer,validityDivO); 
+                 d = "";
+               }
+        })   
+
+        //when user gives input need to replace flexcontainer (d="")with div showing weight for that mass and on selected planet(default on pluto)
+
+        const weight_divO = document.createElement('div');  //outer div to show weight and planet img
+        weight_divO.className = 'weight_divO';
+        weight_divO.style.padding = '40px 40px';
+        weight_divO.style.display = 'flex';
+        weight_divO.style.alignItems = 'center';
+
+        const wight_planet_img = document.createElement('img');  //inner div for img
+        //wight_planet_img.setAttribute("src",planet_src[0]);
+        wight_planet_img.style.width = '40%';
+        wight_planet_img.style.padding = '0px 5%';
+
+        const weight_divI = document.createElement('div');   //inner div for weight
+        weight_divI.className = 'weight_divI';
+        weight_divI.style.backgroundColor = "rgba(185, 178, 178, 0.11)";
+        weight_divI.style.borderRadius = '2px';
+        weight_divI.style.fontWeight = 'bold';
+        weight_divI.style.color = "white";
+        weight_divI.style.width = "50%";
+        weight_divI.style.height = "auto";
+        weight_divI.style.padding = '10px 5% 25px 5%';
+        weight_divI.style.lineHeight = '50px';
+        weight_divI.style.fontSize = '18px';
+        
+        weight_divO.appendChild(wight_planet_img);    
+        weight_divO.appendChild(weight_divI);
+
+       // getting value of default selected option before selection
+       var sov=select.value;
+        //console.log(sov);
+        //console.log(planet.indexOf(sov));
+
+       //when planet is slcted and also input is given then show weight for that planet and input
+      /* select.addEventListener("change",function(){                
+           // sov=select.value;
+            //console.log(sov);
+           // console.log(planet.indexOf(sov));
+            input_typed();  //this function replace flexcontainer with weight_divO          
+            
+       })  */ 
+
+       //replaces old child of main with weight_divO
+       function input_typed(){
+          sov=select.value;
+
+          iv=input.valu
+           //console.log(input.value)
+          // console.log(select.value)
+          let weight = iv*planet_weight[planet.indexOf(sov)];  //calculate weight
+          const span = document.createElement('span');
+          span.textContent = weight.toFixed(2)+" N";
+          span.style.borderRadius = '100%';
+          span.style.backgroundColor = "rgba(185, 178, 178, 0.11)";
+          span.style.padding = '20px';
+
+          // console.log("w",weight)
+          // console.log("input",iv)
+          // console.log("selwct",sov)
+            wight_planet_img.setAttribute("src",planet_src[planet.indexOf(sov)]);
+            weight_divI.textContent = "Weight of an object on "+ sov + " is: ";
+
+            const br = document.createElement('br');
+            weight_divI.append(br);
+            weight_divI.append(span);
+            
+            
+                  
+            if(iv != ''){
+                if(d!=2){
+                    main.replaceChild(weight_divO,flexcontainer);//weight_divO  is child of main
+                    d=2;                    
+                    //console.log(flexcontainer)
+                }              
+              
+            } 
+            else if(d!=''){
+                if(d==2){
+                    main.replaceChild(flexcontainer,weight_divO);
+                    d="";
+                }             
+                
+            }                  
+       }
+
+        /* when input is given show weight for that input
+        */            
+        input.addEventListener('change',function (ele){
+            input_typed();
+            //console.log(ele.target.value)
+                           
+           // console.log(ele.target.value)
+           // document.querySelector('main').replaceChild(weight_divO,flexcontainer);
+        })  
+
+    </script>    
+</body>
+</html>
+
+
